@@ -31,7 +31,6 @@ export default function Boutique() {
     setBoutique(data)
     setLoading(false)
 
-    // Tracker la vue
     if (data) {
       await supabase.from('vues').insert({
         boutique_id: id,
@@ -71,12 +70,10 @@ export default function Boutique() {
       await supabase.from('follows')
         .insert({ acheteur_id: user.id, boutique_id: id })
       setBoutique({ ...boutique, followers_count: boutique.followers_count + 1 })
-
-      // Notifier le vendeur
       await supabase.from('notifications').insert({
         user_id: boutique.vendeur_id,
         type: 'follow',
-        message: `👥 Quelqu'un a commencé à suivre ta boutique "${boutique.nom}" !`,
+        message: `Quelqu'un a commencé à suivre ta boutique "${boutique.nom}" !`,
         lien: `/dashboard`
       })
     }
@@ -87,19 +84,13 @@ export default function Boutique() {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center text-gray-400">
-      <div className="text-center">
-        <p className="text-4xl mb-3">⏳</p>
-        <p>Chargement...</p>
-      </div>
+      <p>Chargement...</p>
     </div>
   )
 
   if (!boutique) return (
     <div className="min-h-screen flex items-center justify-center text-gray-400">
-      <div className="text-center">
-        <p className="text-4xl mb-3">😕</p>
-        <p>Boutique introuvable</p>
-      </div>
+      <p>Boutique introuvable</p>
     </div>
   )
 
@@ -112,7 +103,7 @@ export default function Boutique() {
               {boutique.logo_url ? (
                 <img src={boutique.logo_url} alt={boutique.nom} className="w-full h-full object-cover" />
               ) : (
-                <span className="text-4xl">🏪</span>
+                <span className="text-gray-400 text-sm">Logo</span>
               )}
             </div>
             <div className="flex-1 text-center sm:text-left">
@@ -123,15 +114,15 @@ export default function Boutique() {
                   {boutique.categories.map(cat => {
                     const catInfo = CATEGORIES.find(c => c.id === cat)
                     return catInfo ? (
-                      <span key={cat} className="bg-green-50 text-green-700 text-xs px-2 py-0.5 rounded-full">
-                        {catInfo.emoji} {catInfo.label}
+                      <span key={cat} className="bg-green-50 text-green-700 text-xs px-2 py-0.5 rounded-full border border-green-200">
+                        {catInfo.label}
                       </span>
                     ) : null
                   })}
                 </div>
               )}
               <p className="text-gray-400 text-xs mt-2">
-                👥 {boutique.followers_count} followers • 📦 {produits.length} produits
+                {boutique.followers_count} followers • {produits.length} produits
               </p>
             </div>
           </div>
@@ -143,7 +134,7 @@ export default function Boutique() {
               rel="noreferrer"
               className="flex-1 bg-green-500 text-white py-3 rounded-xl font-semibold text-center hover:bg-green-600 transition text-sm sm:text-base"
             >
-              💬 Contacter sur WhatsApp
+              Contacter sur WhatsApp
             </a>
             {!estProprietaire && (
               <button
@@ -152,7 +143,7 @@ export default function Boutique() {
                   suivi ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' : 'bg-green-600 text-white hover:bg-green-700'
                 }`}
               >
-                {suivi ? 'Suivi ✓' : '+ Suivre'}
+                {suivi ? 'Suivi' : '+ Suivre'}
               </button>
             )}
             {estProprietaire && (
@@ -161,7 +152,7 @@ export default function Boutique() {
                   onClick={() => navigate('/creer-boutique')}
                   className="flex-1 px-4 py-3 rounded-xl font-semibold text-sm bg-gray-100 text-gray-600 hover:bg-gray-200 transition"
                 >
-                  ✏️ Modifier
+                  Modifier
                 </button>
                 <button
                   onClick={() => navigate(`/ajouter-produit/${boutique.id}`)}
@@ -173,7 +164,7 @@ export default function Boutique() {
                   onClick={() => navigate('/dashboard')}
                   className="flex-1 px-4 py-3 rounded-xl font-semibold text-sm bg-blue-500 text-white hover:bg-blue-600 transition"
                 >
-                  📊 Dashboard
+                  Dashboard
                 </button>
               </div>
             )}
@@ -189,7 +180,7 @@ export default function Boutique() {
               onglet === 'produits' ? 'border-green-600 text-green-600' : 'border-transparent text-gray-400'
             }`}
           >
-            📦 Produits ({produits.length})
+            Produits ({produits.length})
           </button>
           <button
             onClick={() => setOnglet('avis')}
@@ -197,7 +188,7 @@ export default function Boutique() {
               onglet === 'avis' ? 'border-green-600 text-green-600' : 'border-transparent text-gray-400'
             }`}
           >
-            ⭐ Avis
+            Avis
           </button>
         </div>
       </div>
@@ -206,7 +197,6 @@ export default function Boutique() {
         {onglet === 'produits' && (
           produits.length === 0 ? (
             <div className="text-center py-16 text-gray-400">
-              <p className="text-4xl mb-3">📦</p>
               <p>Aucun produit pour l'instant</p>
             </div>
           ) : (
