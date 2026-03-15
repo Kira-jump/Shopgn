@@ -110,10 +110,7 @@ export default function CreerBoutique() {
 
   if (!checkDone && user) return (
     <div className="min-h-screen flex items-center justify-center text-gray-400">
-      <div className="text-center">
-        <p className="text-4xl mb-3">⏳</p>
-        <p>Chargement...</p>
-      </div>
+      <p>Chargement...</p>
     </div>
   )
 
@@ -121,7 +118,7 @@ export default function CreerBoutique() {
     <div className="min-h-screen bg-gray-50 py-6 px-4">
       <div className="max-w-lg mx-auto bg-white rounded-2xl shadow-lg p-6 sm:p-8">
         <h1 className="text-xl sm:text-2xl font-bold text-green-600 mb-1">
-          {boutique ? '✏️ Modifier ma boutique' : '🏪 Créer ma boutique'}
+          {boutique ? 'Modifier ma boutique' : 'Créer ma boutique'}
         </h1>
         <p className="text-gray-500 text-sm mb-6">
           {boutique ? 'Mets à jour les infos de ta boutique' : 'Configure ta boutique en quelques secondes'}
@@ -138,11 +135,11 @@ export default function CreerBoutique() {
               {preview || boutique?.logo_url ? (
                 <img src={preview || boutique?.logo_url} alt="logo" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-4xl">🏪</span>
+                <span className="text-gray-400 text-sm">Logo</span>
               )}
             </div>
             <label className="cursor-pointer bg-green-50 text-green-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-100 transition">
-              📷 Choisir un logo
+              Choisir un logo
               <input type="file" accept="image/*" onChange={handleLogo} className="hidden" />
             </label>
           </div>
@@ -159,15 +156,15 @@ export default function CreerBoutique() {
             />
           </div>
 
-          {/* Catégories multiples */}
+          {/* Catégories */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Catégories
-              <span className="text-gray-400 font-normal ml-1">(choisis une ou plusieurs)</span>
+              <span className="text-gray-400 font-normal ml-1">(une ou plusieurs)</span>
             </label>
             {categories.length > 0 && (
               <p className="text-xs text-green-600 mb-2">
-                ✅ {categories.length} catégorie{categories.length > 1 ? 's' : ''} sélectionnée{categories.length > 1 ? 's' : ''}
+                {categories.length} catégorie{categories.length > 1 ? 's' : ''} sélectionnée{categories.length > 1 ? 's' : ''}
               </p>
             )}
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
@@ -185,8 +182,7 @@ export default function CreerBoutique() {
                   {categories.includes(cat.id) && (
                     <span className="absolute top-1 right-1 text-green-500 text-xs">✓</span>
                   )}
-                  <div className="text-lg">{cat.emoji}</div>
-                  <div>{cat.label}</div>
+                  {cat.label}
                 </button>
               ))}
             </div>
@@ -221,7 +217,7 @@ export default function CreerBoutique() {
             disabled={loading}
             className="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition disabled:opacity-50 text-sm sm:text-base"
           >
-            {loading ? 'Enregistrement...' : boutique ? 'Mettre à jour' : 'Créer ma boutique 🚀'}
+            {loading ? 'Enregistrement...' : boutique ? 'Mettre à jour' : 'Créer ma boutique'}
           </button>
         </form>
 

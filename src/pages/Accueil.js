@@ -36,7 +36,7 @@ export default function Accueil() {
       {/* Hero */}
       <div className="bg-green-600 text-white py-8 px-4 text-center">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
-          🛍️ GuinéeShop
+          ShopGN
         </h1>
         <p className="text-green-100 mb-5 text-sm sm:text-base">
           La marketplace des vendeurs guinéens
@@ -46,7 +46,7 @@ export default function Accueil() {
             type="text"
             value={recherche}
             onChange={(e) => setRecherche(e.target.value)}
-            placeholder="🔍 Rechercher une boutique..."
+            placeholder="Rechercher une boutique..."
             className="w-full px-4 py-3 rounded-xl text-gray-700 focus:outline-none shadow-md text-sm sm:text-base"
           />
         </div>
@@ -60,14 +60,13 @@ export default function Accueil() {
               <button
                 key={cat.id}
                 onClick={() => setCategorieActive(cat.id)}
-                className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
                   categorieActive === cat.id
                     ? 'bg-green-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600'
                 }`}
               >
-                <span>{cat.emoji}</span>
-                <span>{cat.label}</span>
+                {cat.label}
               </button>
             ))}
           </div>
@@ -89,12 +88,10 @@ export default function Accueil() {
 
         {loading ? (
           <div className="text-center py-20 text-gray-400">
-            <p className="text-4xl mb-3">⏳</p>
             <p>Chargement...</p>
           </div>
         ) : boutiquesFiltrees.length === 0 ? (
           <div className="text-center py-20 text-gray-400">
-            <p className="text-4xl mb-3">🏪</p>
             <p>Aucune boutique trouvée</p>
             {categorieActive !== 'tout' && (
               <button
