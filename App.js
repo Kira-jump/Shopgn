@@ -7,10 +7,6 @@ import Connexion from './pages/Connexion'
 import Boutique from './pages/Boutique'
 import CreerBoutique from './pages/CreerBoutique'
 import AjouterProduit from './pages/AjouterProduit'
-import Feed from './pages/Feed'
-import Profil from './pages/Profil'
-import Dashboard from './pages/Dashboard'
-import Notifications from './pages/Notifications'
 
 function App() {
   return (
@@ -24,10 +20,6 @@ function App() {
           <Route path="/boutique/:id" element={<Boutique />} />
           <Route path="/creer-boutique" element={<CreerBoutique />} />
           <Route path="/ajouter-produit/:boutiqueId" element={<AjouterProduit />} />
-          <Route path="/feed" element={<Feed />} />
-          <Route path="/profil" element={<Profil />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/notifications" element={<Notifications />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
