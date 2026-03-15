@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ShopGN</string>
+    <string name="title_activity_main">ShopGN</string>
+    <string name="package_name">com.shopgn.app</string>
+    <string name="custom_url_scheme">com.shopgn.app</string>
+</resources>
