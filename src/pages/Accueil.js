@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { CATEGORIES } from '../lib/categories'
 import { useNavigate } from 'react-router-dom'
+import ImageViewer from '../components/ImageViewer'
 
 export default function Accueil() {
   const [produits, setProduits] = useState([])
   const [loading, setLoading] = useState(true)
   const [recherche, setRecherche] = useState('')
   const [categorieActive, setCategorieActive] = useState('tout')
+  const [imageSelectionnee, setImageSelectionnee] = useState(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -104,10 +106,13 @@ export default function Accueil() {
             {produitsFiltres.map(produit => (
               <div
                 key={produit.id}
-                onClick={() => navigate(`/boutique/${produit.boutiques?.id}`)}
-                className="bg-white rounded-2xl shadow hover:shadow-lg transition-all overflow-hidden border border-gray-100 hover:border-green-200 hover:-translate-y-1 duration-200 cursor-pointer"
+                className="bg-white rounded-2xl shadow hover:shadow-lg transition-all overflow-hidden border border-gray-100 hover:border-green-200 hover:-translate-y-1 duration-200"
               >
-                <div className="h-40 sm:h-48 bg-gray-50 flex items-center justify-center overflow-hidden">
+                {/* Image cliquable */}
+                <div
+                  className="h-40 sm:h-48 bg-gray-50 flex items-center justify-center overflow-hidden cursor-zoom-in"
+                  onClick={() => produit.image_url && setImageSelectionnee(produit)}
+                >
                   {produit.image_url ? (
                     <img
                       src={produit.image_url}
@@ -122,7 +127,10 @@ export default function Accueil() {
                 </div>
 
                 <div className="p-3">
-                  <div className="flex items-center gap-1.5 mb-1">
+                  <div
+                    className="flex items-center gap-1.5 mb-1 cursor-pointer"
+                    onClick={() => navigate(`/boutique/${produit.boutiques?.id}`)}
+                  >
                     <div className="w-5 h-5 rounded-full bg-green-50 overflow-hidden flex-shrink-0 border border-green-100">
                       {produit.boutiques?.logo_url ? (
                         <img src={produit.boutiques.logo_url} alt="" className="w-full h-full object-cover" />
@@ -130,7 +138,7 @@ export default function Accueil() {
                         <div className="w-full h-full bg-green-200" />
                       )}
                     </div>
-                    <span className="text-xs text-gray-400 truncate">
+                    <span className="text-xs text-gray-400 truncate hover:text-green-600">
                       {produit.boutiques?.nom}
                     </span>
                   </div>
@@ -147,7 +155,6 @@ export default function Accueil() {
                     href={`https://wa.me/${produit.boutiques?.whatsapp}?text=${encodeURIComponent(`Bonjour, je suis intéressé(e) par: ${produit.nom} à ${produit.prix.toLocaleString()} GNF`)}`}
                     target="_blank"
                     rel="noreferrer"
-                    onClick={(e) => e.stopPropagation()}
                     className="block mt-2 bg-green-500 text-white text-xs text-center py-2 rounded-lg hover:bg-green-600 transition font-medium"
                   >
                     Commander
@@ -158,6 +165,15 @@ export default function Accueil() {
           </div>
         )}
       </div>
+
+      {/* Image viewer plein écran */}
+      {imageSelectionnee && (
+        <ImageViewer
+          image={imageSelectionnee.image_url}
+          nom={imageSelectionnee.nom}
+          onClose={() => setImageSelectionnee(null)}
+        />
+      )}
     </div>
   )
 }
