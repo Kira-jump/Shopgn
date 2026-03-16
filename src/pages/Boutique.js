@@ -4,7 +4,6 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import CarteProduit from '../components/CarteProduit'
 import Avis from '../components/Avis'
-import { CATEGORIES } from '../lib/categories'
 
 export default function Boutique() {
   const [boutique, setBoutique] = useState(null)
@@ -30,7 +29,6 @@ export default function Boutique() {
       .single()
     setBoutique(data)
     setLoading(false)
-
     if (data) {
       await supabase.from('vues').insert({
         boutique_id: id,
@@ -80,6 +78,11 @@ export default function Boutique() {
     setSuivi(!suivi)
   }
 
+  const supprimerProduit = async (produitId) => {
+    await supabase.from('produits').delete().eq('id', produitId)
+    setProduits(produits.filter(p => p.id !== produitId))
+  }
+
   const estProprietaire = user && boutique && user.id === boutique.vendeur_id
 
   if (loading) return (
@@ -109,18 +112,6 @@ export default function Boutique() {
             <div className="flex-1 text-center sm:text-left">
               <h1 className="text-xl sm:text-2xl font-bold text-gray-800">{boutique.nom}</h1>
               <p className="text-gray-500 text-sm mt-1">{boutique.description}</p>
-              {boutique.categories && boutique.categories.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mt-2 justify-center sm:justify-start">
-                  {boutique.categories.map(cat => {
-                    const catInfo = CATEGORIES.find(c => c.id === cat)
-                    return catInfo ? (
-                      <span key={cat} className="bg-green-50 text-green-700 text-xs px-2 py-0.5 rounded-full border border-green-200">
-                        {catInfo.label}
-                      </span>
-                    ) : null
-                  })}
-                </div>
-              )}
               <p className="text-gray-400 text-xs mt-2">
                 {boutique.followers_count} followers • {produits.length} produits
               </p>
@@ -132,7 +123,7 @@ export default function Boutique() {
               href={`https://wa.me/${boutique.whatsapp}`}
               target="_blank"
               rel="noreferrer"
-              className="flex-1 bg-green-500 text-white py-3 rounded-xl font-semibold text-center hover:bg-green-600 transition text-sm sm:text-base"
+              className="flex-1 bg-green-500 text-white py-3 rounded-xl font-semibold text-center hover:bg-green-600 transition text-sm"
             >
               Contacter sur WhatsApp
             </a>
@@ -140,7 +131,7 @@ export default function Boutique() {
               <button
                 onClick={toggleSuivi}
                 className={`px-6 py-3 rounded-xl font-semibold text-sm transition ${
-                  suivi ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' : 'bg-green-600 text-white hover:bg-green-700'
+                  suivi ? 'bg-gray-100 text-gray-600' : 'bg-green-600 text-white hover:bg-green-700'
                 }`}
               >
                 {suivi ? 'Suivi' : '+ Suivre'}
@@ -202,7 +193,14 @@ export default function Boutique() {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
               {produits.map(produit => (
-                <CarteProduit key={produit.id} produit={produit} whatsapp={boutique.whatsapp} />
+                <CarteProduit
+                  key={produit.id}
+                  produit={produit}
+                  whatsapp={boutique.whatsapp}
+                  estProprietaire={estProprietaire}
+                  onSupprimer={supprimerProduit}
+                  onModifier={(p) => navigate(`/modifier-produit/${p.id}`)}
+                />
               ))}
             </div>
           )
