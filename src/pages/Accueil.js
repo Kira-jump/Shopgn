@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { useAuth } from '../context/AuthContext'
 import { CATEGORIES } from '../lib/categories'
 import { useNavigate } from 'react-router-dom'
 
@@ -9,7 +8,6 @@ export default function Accueil() {
   const [loading, setLoading] = useState(true)
   const [recherche, setRecherche] = useState('')
   const [categorieActive, setCategorieActive] = useState('tout')
-  const { user } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -19,7 +17,7 @@ export default function Accueil() {
   const fetchProduits = async () => {
     const { data } = await supabase
       .from('produits')
-      .select('*, boutiques(id, nom, logo_url, whatsapp, categories)')
+      .select('*, boutiques(id, nom, logo_url, whatsapp)')
       .order('created_at', { ascending: false })
     setProduits(data || [])
     setLoading(false)
@@ -28,8 +26,7 @@ export default function Accueil() {
   const produitsFiltres = produits.filter(p => {
     const matchRecherche = p.nom.toLowerCase().includes(recherche.toLowerCase()) ||
       p.boutiques?.nom.toLowerCase().includes(recherche.toLowerCase())
-    const matchCategorie = categorieActive === 'tout' ||
-      (p.boutiques?.categories && p.boutiques.categories.includes(categorieActive))
+    const matchCategorie = categorieActive === 'tout' || p.categorie === categorieActive
     return matchRecherche && matchCategorie
   })
 
@@ -37,9 +34,7 @@ export default function Accueil() {
     <div className="min-h-screen bg-gray-50">
       {/* Hero */}
       <div className="bg-green-600 text-white py-8 px-4 text-center">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
-          ShopGN
-        </h1>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">ShopGN</h1>
         <p className="text-green-100 mb-5 text-sm sm:text-base">
           La marketplace des vendeurs guinéens
         </p>
@@ -112,7 +107,6 @@ export default function Accueil() {
                 onClick={() => navigate(`/boutique/${produit.boutiques?.id}`)}
                 className="bg-white rounded-2xl shadow hover:shadow-lg transition-all overflow-hidden border border-gray-100 hover:border-green-200 hover:-translate-y-1 duration-200 cursor-pointer"
               >
-                {/* Image produit */}
                 <div className="h-40 sm:h-48 bg-gray-50 flex items-center justify-center overflow-hidden">
                   {produit.image_url ? (
                     <img
@@ -128,7 +122,6 @@ export default function Accueil() {
                 </div>
 
                 <div className="p-3">
-                  {/* Boutique */}
                   <div className="flex items-center gap-1.5 mb-1">
                     <div className="w-5 h-5 rounded-full bg-green-50 overflow-hidden flex-shrink-0 border border-green-100">
                       {produit.boutiques?.logo_url ? (
@@ -142,17 +135,14 @@ export default function Accueil() {
                     </span>
                   </div>
 
-                  {/* Nom produit */}
                   <h3 className="font-semibold text-gray-800 text-sm line-clamp-1">
                     {produit.nom}
                   </h3>
 
-                  {/* Prix */}
                   <p className="text-green-600 font-bold text-sm mt-1">
                     {produit.prix.toLocaleString()} GNF
                   </p>
 
-                  {/* Bouton Commander */}
                   <a
                     href={`https://wa.me/${produit.boutiques?.whatsapp}?text=${encodeURIComponent(`Bonjour, je suis intéressé(e) par: ${produit.nom} à ${produit.prix.toLocaleString()} GNF`)}`}
                     target="_blank"
