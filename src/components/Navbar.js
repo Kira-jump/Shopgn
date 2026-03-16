@@ -27,14 +27,14 @@ export default function Navbar() {
   }
 
   const badgeRole = profile?.role === 'vendeur'
-    ? <span className="bg-orange-100 text-orange-600 text-xs px-2 py-0.5 rounded-full font-semibold">🏪 Vendeur</span>
-    : <span className="bg-blue-100 text-blue-600 text-xs px-2 py-0.5 rounded-full font-semibold">🛒 Acheteur</span>
+    ? <span className="bg-orange-100 text-orange-600 text-xs px-2 py-0.5 rounded-full font-semibold">Vendeur</span>
+    : <span className="bg-blue-100 text-blue-600 text-xs px-2 py-0.5 rounded-full font-semibold">Acheteur</span>
 
   return (
     <nav className="bg-green-600 text-white shadow-md">
       <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
         <Link to="/" className="text-xl font-bold tracking-wide">
-          🛍️ GuinéeShop
+          ShopGN
         </Link>
 
         {/* Menu desktop */}
@@ -43,25 +43,24 @@ export default function Navbar() {
             <>
               <Link to="/" className="hover:underline">Accueil</Link>
               {profile?.role === 'acheteur' && (
-                <Link to="/feed" className="hover:underline">📰 Feed</Link>
+                <Link to="/feed" className="hover:underline">Feed</Link>
               )}
               {profile?.role === 'vendeur' && (
                 <>
-                  <Link to="/creer-boutique" className="hover:underline">🏪 Boutique</Link>
-                  <Link to="/dashboard" className="hover:underline">📊 Dashboard</Link>
+                  <Link to="/creer-boutique" className="hover:underline">Ma Boutique</Link>
+                  <Link to="/dashboard" className="hover:underline">Dashboard</Link>
                 </>
               )}
-              {/* Cloche notifications */}
               <Link to="/notifications" className="relative hover:opacity-80">
-                🔔
+                Notifications
                 {notifsNonLues > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-3 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
                     {notifsNonLues}
                   </span>
                 )}
               </Link>
               <Link to="/profil" className="flex items-center gap-2 bg-green-700 px-3 py-1.5 rounded-full hover:bg-green-800 transition">
-                <span className="text-green-100 font-medium">👤 {profile?.nom}</span>
+                <span className="text-green-100 font-medium">{profile?.nom}</span>
                 {badgeRole}
               </Link>
               <button
@@ -85,7 +84,7 @@ export default function Navbar() {
         <div className="md:hidden flex items-center gap-3">
           {user && (
             <Link to="/notifications" className="relative">
-              🔔
+              Notifs
               {notifsNonLues > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
                   {notifsNonLues}
@@ -108,23 +107,23 @@ export default function Navbar() {
           {user ? (
             <>
               <Link to="/profil" onClick={() => setMenuOuvert(false)} className="flex items-center gap-2 pt-3">
-                <span className="text-green-100 font-medium">👤 {profile?.nom}</span>
+                <span className="text-green-100 font-medium">{profile?.nom}</span>
                 {badgeRole}
               </Link>
               <Link to="/" onClick={() => setMenuOuvert(false)} className="hover:underline">Accueil</Link>
               {profile?.role === 'acheteur' && (
-                <Link to="/feed" onClick={() => setMenuOuvert(false)} className="hover:underline">📰 Feed</Link>
+                <Link to="/feed" onClick={() => setMenuOuvert(false)} className="hover:underline">Feed</Link>
               )}
               {profile?.role === 'vendeur' && (
                 <>
-                  <Link to="/creer-boutique" onClick={() => setMenuOuvert(false)} className="hover:underline">🏪 Ma Boutique</Link>
-                  <Link to="/dashboard" onClick={() => setMenuOuvert(false)} className="hover:underline">📊 Dashboard</Link>
+                  <Link to="/creer-boutique" onClick={() => setMenuOuvert(false)} className="hover:underline">Ma Boutique</Link>
+                  <Link to="/dashboard" onClick={() => setMenuOuvert(false)} className="hover:underline">Dashboard</Link>
                 </>
               )}
               <Link to="/notifications" onClick={() => setMenuOuvert(false)} className="hover:underline">
-                🔔 Notifications {notifsNonLues > 0 && `(${notifsNonLues})`}
+                Notifications {notifsNonLues > 0 && `(${notifsNonLues})`}
               </Link>
-              <Link to="/profil" onClick={() => setMenuOuvert(false)} className="hover:underline">👤 Mon Profil</Link>
+              <Link to="/profil" onClick={() => setMenuOuvert(false)} className="hover:underline">Mon Profil</Link>
               <button
                 onClick={deconnexion}
                 className="bg-white text-green-600 px-3 py-2 rounded-full font-semibold hover:bg-green-100 w-full"
