@@ -51,10 +51,11 @@ export default function Navbar() {
                   <Link to="/dashboard" className="hover:underline">Dashboard</Link>
                 </>
               )}
+              {/* Cloche notifications */}
               <Link to="/notifications" className="relative hover:opacity-80">
-                Notifications
+                🔔
                 {notifsNonLues > 0 && (
-                  <span className="absolute -top-1 -right-3 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
                     {notifsNonLues}
                   </span>
                 )}
@@ -84,7 +85,7 @@ export default function Navbar() {
         <div className="md:hidden flex items-center gap-3">
           {user && (
             <Link to="/notifications" className="relative">
-              Notifs
+              🔔
               {notifsNonLues > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
                   {notifsNonLues}
