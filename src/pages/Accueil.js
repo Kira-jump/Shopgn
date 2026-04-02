@@ -33,36 +33,39 @@ export default function Accueil() {
   })
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="bg-green-600 text-white py-8 px-4 text-center">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">ShopGN</h1>
-        <p className="text-green-100 mb-5 text-sm sm:text-base">
+      <div className="bg-green-600 text-white py-10 px-4 text-center">
+        <h1 className="text-3xl sm:text-4xl font-extrabold mb-2 tracking-tight">
+          ShopGN
+        </h1>
+        <p className="text-green-100 mb-6 text-sm sm:text-base max-w-md mx-auto">
           La marketplace des vendeurs guinéens
         </p>
-        <div className="max-w-xl mx-auto">
+        <div className="max-w-xl mx-auto relative">
           <input
             type="text"
             value={recherche}
             onChange={(e) => setRecherche(e.target.value)}
             placeholder="Rechercher un produit ou une boutique..."
-            className="w-full px-4 py-3 rounded-xl text-gray-700 focus:outline-none shadow-md text-sm sm:text-base"
+            className="w-full px-5 py-3 rounded-full text-gray-700 focus:outline-none shadow-lg text-sm"
           />
+          <span className="absolute right-4 top-3 text-gray-400">🔍</span>
         </div>
       </div>
 
       {/* Catégories */}
-      <div className="bg-white shadow-sm sticky top-0 z-10">
+      <div className="bg-white border-b border-gray-100 sticky top-0 z-10 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-3">
           <div className="flex gap-2 overflow-x-auto pb-1">
             {CATEGORIES.map(cat => (
               <button
                 key={cat.id}
                 onClick={() => setCategorieActive(cat.id)}
-                className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all border ${
                   categorieActive === cat.id
-                    ? 'bg-green-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600'
+                    ? 'bg-green-600 text-white border-green-600 shadow'
+                    : 'bg-white text-gray-600 border-gray-200 hover:border-green-400 hover:text-green-600'
                 }`}
               >
                 {cat.label}
@@ -73,14 +76,14 @@ export default function Accueil() {
       </div>
 
       {/* Produits */}
-      <div className="max-w-6xl mx-auto px-4 py-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-base sm:text-lg font-bold text-gray-700">
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-800">
             {categorieActive === 'tout'
               ? 'Tous les produits'
               : CATEGORIES.find(c => c.id === categorieActive)?.label}
           </h2>
-          <span className="text-gray-400 text-sm">
+          <span className="text-gray-400 text-sm bg-gray-100 px-3 py-1 rounded-full">
             {produitsFiltres.length} produit{produitsFiltres.length > 1 ? 's' : ''}
           </span>
         </div>
@@ -102,60 +105,68 @@ export default function Accueil() {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {produitsFiltres.map(produit => (
               <div
                 key={produit.id}
-                className="bg-white rounded-2xl shadow hover:shadow-lg transition-all overflow-hidden border border-gray-100 hover:border-green-200 hover:-translate-y-1 duration-200"
+                className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-green-300 hover:shadow-lg transition-all duration-200 group"
               >
-                {/* Image cliquable */}
+                {/* Image */}
                 <div
-                  className="h-40 sm:h-48 bg-gray-50 flex items-center justify-center overflow-hidden cursor-zoom-in"
+                  className="relative overflow-hidden bg-gray-50 cursor-zoom-in"
+                  style={{ paddingBottom: '100%' }}
                   onClick={() => produit.image_url && setImageSelectionnee(produit)}
                 >
-                  {produit.image_url ? (
-                    <img
-                      src={produit.image_url}
-                      alt={produit.nom}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="text-center text-gray-300">
-                      <p className="text-4xl">📦</p>
-                    </div>
-                  )}
+                  <div className="absolute inset-0">
+                    {produit.image_url ? (
+                      <img
+                        src={produit.image_url}
+                        alt={produit.nom}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-200">
+                        <span className="text-5xl">📦</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
+                {/* Infos */}
                 <div className="p-3">
+                  {/* Boutique */}
                   <div
-                    className="flex items-center gap-1.5 mb-1 cursor-pointer"
+                    className="flex items-center gap-1.5 mb-2 cursor-pointer"
                     onClick={() => navigate(`/boutique/${produit.boutiques?.id}`)}
                   >
-                    <div className="w-5 h-5 rounded-full bg-green-50 overflow-hidden flex-shrink-0 border border-green-100">
+                    <div className="w-5 h-5 rounded-full overflow-hidden flex-shrink-0 border border-gray-200">
                       {produit.boutiques?.logo_url ? (
                         <img src={produit.boutiques.logo_url} alt="" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full bg-green-200" />
+                        <div className="w-full h-full bg-green-100" />
                       )}
                     </div>
-                    <span className="text-xs text-gray-400 truncate hover:text-green-600">
+                    <span className="text-xs text-gray-400 truncate hover:text-green-600 transition">
                       {produit.boutiques?.nom}
                     </span>
                   </div>
 
-                  <h3 className="font-semibold text-gray-800 text-sm line-clamp-1">
+                  {/* Nom */}
+                  <h3 className="font-semibold text-gray-800 text-sm line-clamp-2 leading-tight mb-2">
                     {produit.nom}
                   </h3>
 
-                  <p className="text-green-600 font-bold text-sm mt-1">
+                  {/* Prix */}
+                  <p className="text-green-600 font-bold text-base mb-3">
                     {produit.prix.toLocaleString()} GNF
                   </p>
 
+                  {/* Bouton Commander */}
                   <a
                     href={`https://wa.me/${produit.boutiques?.whatsapp}?text=${encodeURIComponent(`Bonjour, je suis intéressé(e) par: ${produit.nom} à ${produit.prix.toLocaleString()} GNF`)}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="block mt-2 bg-green-500 text-white text-xs text-center py-2 rounded-lg hover:bg-green-600 transition font-medium"
+                    className="block w-full bg-green-600 text-white text-xs text-center py-2 rounded-lg hover:bg-green-700 transition font-semibold"
                   >
                     Commander
                   </a>
@@ -166,7 +177,7 @@ export default function Accueil() {
         )}
       </div>
 
-      {/* Image viewer plein écran */}
+      {/* Image viewer */}
       {imageSelectionnee && (
         <ImageViewer
           image={imageSelectionnee.image_url}
