@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { CATEGORIES } from '../lib/categories'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import ImageViewer from '../components/ImageViewer'
 import CarouselProduits from '../components/CarouselProduits'
 
@@ -22,6 +23,7 @@ export default function Accueil() {
   const [categorieActive, setCategorieActive] = useState('tout')
   const [imageSelectionnee, setImageSelectionnee] = useState(null)
   const [animation, setAnimation] = useState(false)
+  const { user } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -65,9 +67,7 @@ export default function Accueil() {
     <div className="min-h-screen bg-white">
       {/* Hero */}
       <div className="bg-green-600 text-white py-10 px-4 text-center">
-        <h1 className="text-3xl sm:text-4xl font-extrabold mb-2 tracking-tight">
-          ShopGN
-        </h1>
+        <h1 className="text-3xl sm:text-4xl font-extrabold mb-2 tracking-tight">ShopGN</h1>
         <p className="text-green-100 mb-6 text-sm sm:text-base max-w-md mx-auto">
           La marketplace des vendeurs guinéens
         </p>
@@ -83,7 +83,7 @@ export default function Accueil() {
         </div>
       </div>
 
-      {/* Carousel défilant */}
+      {/* Carousel */}
       {!loading && produits.length > 0 && (
         <CarouselProduits produits={shuffleArray(produits)} />
       )}
@@ -113,9 +113,7 @@ export default function Accueil() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg sm:text-xl font-bold text-gray-800">
-            {categorieActive === 'tout'
-              ? 'Tous les produits'
-              : CATEGORIES.find(c => c.id === categorieActive)?.label}
+            {categorieActive === 'tout' ? 'Tous les produits' : CATEGORIES.find(c => c.id === categorieActive)?.label}
           </h2>
           <span className="text-gray-400 text-sm bg-gray-100 px-3 py-1 rounded-full">
             {produitsFiltres.length} produit{produitsFiltres.length > 1 ? 's' : ''}
@@ -123,27 +121,18 @@ export default function Accueil() {
         </div>
 
         {loading ? (
-          <div className="text-center py-20 text-gray-400">
-            <p>Chargement...</p>
-          </div>
+          <div className="text-center py-20 text-gray-400"><p>Chargement...</p></div>
         ) : produitsFiltres.length === 0 ? (
           <div className="text-center py-20 text-gray-400">
             <p>Aucun produit trouvé</p>
             {categorieActive !== 'tout' && (
-              <button
-                onClick={() => setCategorieActive('tout')}
-                className="mt-3 text-green-600 underline text-sm"
-              >
+              <button onClick={() => setCategorieActive('tout')} className="mt-3 text-green-600 underline text-sm">
                 Voir tous les produits
               </button>
             )}
           </div>
         ) : (
-          <div
-            className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 transition-opacity duration-300 ${
-              animation ? 'opacity-0' : 'opacity-100'
-            }`}
-          >
+          <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 transition-opacity duration-300 ${animation ? 'opacity-0' : 'opacity-100'}`}>
             {produitsFiltres.map(produit => (
               <div
                 key={produit.id}
@@ -194,14 +183,23 @@ export default function Accueil() {
                     {produit.prix.toLocaleString()} GNF
                   </p>
 
-                  <a
-                    href={`https://wa.me/${produit.boutiques?.whatsapp}?text=${encodeURIComponent(`Bonjour, je suis intéressé(e) par: ${produit.nom} à ${produit.prix.toLocaleString()} GNF`)}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="block w-full bg-green-600 text-white text-xs text-center py-2 rounded-lg hover:bg-green-700 transition font-semibold"
-                  >
-                    Commander
-                  </a>
+                  {user ? (
+                    <a
+                      href={`https://wa.me/${produit.boutiques?.whatsapp}?text=${encodeURIComponent(`Bonjour, je suis intéressé(e) par: ${produit.nom} à ${produit.prix.toLocaleString()} GNF`)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block w-full bg-green-600 text-white text-xs text-center py-2 rounded-lg hover:bg-green-700 transition font-semibold"
+                    >
+                      Commander
+                    </a>
+                  ) : (
+                    <button
+                      onClick={() => navigate('/connexion')}
+                      className="block w-full bg-gray-100 text-gray-500 text-xs text-center py-2 rounded-lg hover:bg-green-50 hover:text-green-600 transition font-medium border border-gray-200"
+                    >
+                      Connectez-vous pour commander
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
@@ -209,7 +207,6 @@ export default function Accueil() {
         )}
       </div>
 
-      {/* Image viewer */}
       {imageSelectionnee && (
         <ImageViewer
           image={imageSelectionnee.image_url}
