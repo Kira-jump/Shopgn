@@ -56,6 +56,13 @@ export default function Accueil() {
     setLoading(false)
   }
 
+  const handleCommander = (e, produit) => {
+    if (!user) {
+      e.preventDefault()
+      navigate('/inscription')
+    }
+  }
+
   const produitsFiltres = produitsMelanges.filter(p => {
     const matchRecherche = p.nom.toLowerCase().includes(recherche.toLowerCase()) ||
       p.boutiques?.nom.toLowerCase().includes(recherche.toLowerCase())
@@ -183,23 +190,15 @@ export default function Accueil() {
                     {produit.prix.toLocaleString()} GNF
                   </p>
 
-                  {user ? (
-                    <a
-                      href={`https://wa.me/${produit.boutiques?.whatsapp}?text=${encodeURIComponent(`Bonjour, je suis intéressé(e) par: ${produit.nom} à ${produit.prix.toLocaleString()} GNF`)}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block w-full bg-green-600 text-white text-xs text-center py-2 rounded-lg hover:bg-green-700 transition font-semibold"
-                    >
-                      Commander
-                    </a>
-                  ) : (
-                    <button
-                      onClick={() => navigate('/connexion')}
-                      className="block w-full bg-gray-100 text-gray-500 text-xs text-center py-2 rounded-lg hover:bg-green-50 hover:text-green-600 transition font-medium border border-gray-200"
-                    >
-                      Connectez-vous pour commander
-                    </button>
-                  )}
+                  <a
+                    href={user ? `https://wa.me/${produit.boutiques?.whatsapp}?text=${encodeURIComponent(`Bonjour, je suis intéressé(e) par: ${produit.nom} à ${produit.prix.toLocaleString()} GNF`)}` : '#'}
+                    target={user ? "_blank" : "_self"}
+                    rel="noreferrer"
+                    onClick={(e) => handleCommander(e, produit)}
+                    className="block w-full bg-green-600 text-white text-xs text-center py-2 rounded-lg hover:bg-green-700 transition font-semibold"
+                  >
+                    Commander
+                  </a>
                 </div>
               </div>
             ))}
