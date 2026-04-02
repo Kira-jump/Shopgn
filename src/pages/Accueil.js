@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase'
 import { CATEGORIES } from '../lib/categories'
 import { useNavigate } from 'react-router-dom'
 import ImageViewer from '../components/ImageViewer'
+import CarouselProduits from '../components/CarouselProduits'
 
 function shuffleArray(array) {
   const arr = [...array]
@@ -82,6 +83,11 @@ export default function Accueil() {
         </div>
       </div>
 
+      {/* Carousel défilant */}
+      {!loading && produits.length > 0 && (
+        <CarouselProduits produits={shuffleArray(produits)} />
+      )}
+
       {/* Catégories */}
       <div className="bg-white border-b border-gray-100 sticky top-0 z-10 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-3">
@@ -111,11 +117,9 @@ export default function Accueil() {
               ? 'Tous les produits'
               : CATEGORIES.find(c => c.id === categorieActive)?.label}
           </h2>
-          <div className="flex items-center gap-2">
-            <span className="text-gray-400 text-sm bg-gray-100 px-3 py-1 rounded-full">
-              {produitsFiltres.length} produit{produitsFiltres.length > 1 ? 's' : ''}
-            </span>
-          </div>
+          <span className="text-gray-400 text-sm bg-gray-100 px-3 py-1 rounded-full">
+            {produitsFiltres.length} produit{produitsFiltres.length > 1 ? 's' : ''}
+          </span>
         </div>
 
         {loading ? (
@@ -145,7 +149,6 @@ export default function Accueil() {
                 key={produit.id}
                 className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-green-300 hover:shadow-lg transition-all duration-200 group"
               >
-                {/* Image carrée */}
                 <div
                   className="relative overflow-hidden bg-gray-50 cursor-zoom-in"
                   style={{ paddingBottom: '100%' }}
@@ -166,7 +169,6 @@ export default function Accueil() {
                   </div>
                 </div>
 
-                {/* Infos */}
                 <div className="p-3">
                   <div
                     className="flex items-center gap-1.5 mb-2 cursor-pointer"
