@@ -1,31 +1,59 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { CATEGORIES } from '../lib/categories'
 import { useNavigate } from 'react-router-dom'
 import ImageViewer from '../components/ImageViewer'
 
+function shuffleArray(array) {
+  const arr = [...array]
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr
+}
+
 export default function Accueil() {
   const [produits, setProduits] = useState([])
+  const [produitsMelanges, setProduitsMelanges] = useState([])
   const [loading, setLoading] = useState(true)
   const [recherche, setRecherche] = useState('')
   const [categorieActive, setCategorieActive] = useState('tout')
   const [imageSelectionnee, setImageSelectionnee] = useState(null)
+  const [animation, setAnimation] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
     fetchProduits()
   }, [])
 
+  const melangerProduits = useCallback((liste) => {
+    setAnimation(true)
+    setTimeout(() => {
+      setProduitsMelanges(shuffleArray(liste))
+      setAnimation(false)
+    }, 300)
+  }, [])
+
+  useEffect(() => {
+    if (produits.length > 0) {
+      melangerProduits(produits)
+      const interval = setInterval(() => {
+        melangerProduits(produits)
+      }, 15000)
+      return () => clearInterval(interval)
+    }
+  }, [produits, melangerProduits])
+
   const fetchProduits = async () => {
     const { data } = await supabase
       .from('produits')
       .select('*, boutiques(id, nom, logo_url, whatsapp)')
-      .order('created_at', { ascending: false })
     setProduits(data || [])
     setLoading(false)
   }
 
-  const produitsFiltres = produits.filter(p => {
+  const produitsFiltres = produitsMelanges.filter(p => {
     const matchRecherche = p.nom.toLowerCase().includes(recherche.toLowerCase()) ||
       p.boutiques?.nom.toLowerCase().includes(recherche.toLowerCase())
     const matchCategorie = categorieActive === 'tout' || p.categorie === categorieActive
@@ -83,9 +111,11 @@ export default function Accueil() {
               ? 'Tous les produits'
               : CATEGORIES.find(c => c.id === categorieActive)?.label}
           </h2>
-          <span className="text-gray-400 text-sm bg-gray-100 px-3 py-1 rounded-full">
-            {produitsFiltres.length} produit{produitsFiltres.length > 1 ? 's' : ''}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-gray-400 text-sm bg-gray-100 px-3 py-1 rounded-full">
+              {produitsFiltres.length} produit{produitsFiltres.length > 1 ? 's' : ''}
+            </span>
+          </div>
         </div>
 
         {loading ? (
@@ -105,13 +135,17 @@ export default function Accueil() {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div
+            className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 transition-opacity duration-300 ${
+              animation ? 'opacity-0' : 'opacity-100'
+            }`}
+          >
             {produitsFiltres.map(produit => (
               <div
                 key={produit.id}
                 className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-green-300 hover:shadow-lg transition-all duration-200 group"
               >
-                {/* Image */}
+                {/* Image carrée */}
                 <div
                   className="relative overflow-hidden bg-gray-50 cursor-zoom-in"
                   style={{ paddingBottom: '100%' }}
@@ -134,7 +168,6 @@ export default function Accueil() {
 
                 {/* Infos */}
                 <div className="p-3">
-                  {/* Boutique */}
                   <div
                     className="flex items-center gap-1.5 mb-2 cursor-pointer"
                     onClick={() => navigate(`/boutique/${produit.boutiques?.id}`)}
@@ -151,17 +184,14 @@ export default function Accueil() {
                     </span>
                   </div>
 
-                  {/* Nom */}
                   <h3 className="font-semibold text-gray-800 text-sm line-clamp-2 leading-tight mb-2">
                     {produit.nom}
                   </h3>
 
-                  {/* Prix */}
                   <p className="text-green-600 font-bold text-base mb-3">
                     {produit.prix.toLocaleString()} GNF
                   </p>
 
-                  {/* Bouton Commander */}
                   <a
                     href={`https://wa.me/${produit.boutiques?.whatsapp}?text=${encodeURIComponent(`Bonjour, je suis intéressé(e) par: ${produit.nom} à ${produit.prix.toLocaleString()} GNF`)}`}
                     target="_blank"
