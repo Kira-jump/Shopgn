@@ -12,6 +12,7 @@ import Feed from './pages/Feed'
 import Profil from './pages/Profil'
 import Dashboard from './pages/Dashboard'
 import Notifications from './pages/Notifications'
+import Admin from './pages/Admin'
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/profil" element={<Profil />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
