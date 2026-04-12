@@ -25,11 +25,9 @@ export default function AdminLogin() {
       <div className="bg-gray-800 rounded-2xl p-8 w-full max-w-sm shadow-2xl">
         <h1 className="text-2xl font-bold text-white text-center mb-1">ShopGN</h1>
         <p className="text-gray-400 text-center text-sm mb-8">Panel Administrateur</p>
-
         {erreur && (
           <p className="bg-red-900 text-red-300 p-3 rounded-lg mb-4 text-sm text-center">{erreur}</p>
         )}
-
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Nom d'utilisateur</label>
