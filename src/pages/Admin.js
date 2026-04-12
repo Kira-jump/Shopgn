@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
-const ADMIN_ID = 'c5e64ad8-b221-4a4c-a6b8-f1571353c126'
+const ADMIN_ID = '2b3669d4-5764-4c8a-bf4b-a4d4923b12d4'
 
 export default function Admin() {
   const [utilisateurs, setUtilisateurs] = useState([])
